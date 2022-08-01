@@ -1,4 +1,4 @@
-// Build Fonksiyonu Yan Etkisiz Olmalı
+// Ekran tasarımı denemeleri
 import 'package:flutter/material.dart';
 
 void main() {
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Row(
@@ -78,16 +78,45 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                   o
               ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  ogrenciler.add("Yeni");
-                });
-              },
-              child: const Text(
-                "Ekle",
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    ogrenciler.add("Yeni");
+                  });
+                },
+                child: const Text(
+                  "Ekle",
+                ),
               ),
-            )
+            ),
+            SizedBox(
+              width: 100,
+              height: 200,
+              child: Container(
+                color: Colors.yellow,
+                child: Center(
+                  child: Container(
+                    color: Colors.blue,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                      child: Container(
+                        width: 50,
+                        height: 100,
+                        color: Colors.red,
+                        child: const Center(
+                          child: Text(
+                            "AAA",
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
