@@ -44,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // ogrenciler.add("build 'den"); // yapılabilecek bir hata
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
       body: Center(
@@ -69,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ogrenciler.add("Yeni");
                   });
                 },
-                child: Text(
+                child: const Text(
                   "Ekle",
                 ),
             )
