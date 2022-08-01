@@ -35,24 +35,40 @@ class _MyHomePageState extends State<MyHomePage> {
     // tek sefer çalışacağı kabul edilebilir bir kullanım
     // ogrenciler.add("initState 'den");
   }
-    var sinif = 5;
-    var baslik = "Öğrenciler";
-    var ogrenciler = ["Ali", "Ayşe", "Can"];
+  var sinif = 5;
+  var baslik = "Öğrenciler";
+  var ogrenciler = ["Ali", "Ayşe", "Can"];
   @override
   Widget build(BuildContext context) {
     print("MyHomePageState Build...");
-    // ogrenciler.add("build 'den"); // yapılabilecek bir hata
     return Scaffold(
       appBar: AppBar(
+
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "$sinif. Sınıf",
-              textScaleFactor: 2,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.star,
+                  color: Colors.red,
+                ),
+                Text(
+                  "$sinif. Sınıf",
+                  textScaleFactor: 2,
+                ),
+                const Icon(
+                  Icons.star,
+                  color: Colors.red,
+                )
+              ],
             ),
             Text(
               baslik,
@@ -60,17 +76,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             for (final o in ogrenciler)
               Text(
-                o
+                  o
               ),
             ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    ogrenciler.add("Yeni");
-                  });
-                },
-                child: const Text(
-                  "Ekle",
-                ),
+              onPressed: () {
+                setState(() {
+                  ogrenciler.add("Yeni");
+                });
+              },
+              child: const Text(
+                "Ekle",
+              ),
             )
           ],
         ),
