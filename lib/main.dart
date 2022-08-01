@@ -1,4 +1,5 @@
 // Ekran tasarımı denemeleri
+// Row, expanded, flesible, spacer
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,7 +8,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -116,6 +116,37 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
+            ),
+            Row(
+                children: const [
+                  Flexible(
+                    child:
+                    Text(
+                        "Flexible"
+                    ),
+                  ),
+                  Flexible(
+                    child:
+                    Text(
+                        "Flexible"
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                        "Expanded"
+                    ),
+                  ),
+                  Text(
+                      "Merhaba ve spacer"
+                  ),
+                  Spacer(),
+                  Text(
+                      "Merhaba"
+                  ),
+                  Text(
+                      "Merhaba"
+                  ),
+                ]
             ),
           ],
         ),
