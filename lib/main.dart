@@ -1,5 +1,5 @@
 // Tasarım Örneği - Biraz daha Widget ağacı
-// Veri akışı
+// Veri akışı - Inherited Widget
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void yeniOgrenciEkle(String yeniOgrenci){
     setState(() {
-      ogrenciler.add(yeniOgrenci);
+      ogrenciler = [...ogrenciler, yeniOgrenci];
     });
   }
 
@@ -53,36 +53,60 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     print("MyHomePageState Build ...");
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Sinif(
+      body: SinifBilgisi(
         sinif: sinif,
         baslik: baslik,
         ogrenciler: ogrenciler,
         yeniOgrenciEkle: yeniOgrenciEkle,
-
+        child: const Sinif(
+        ),
       ),
     );
   }
 }
 
-class Sinif extends StatelessWidget {
-  const Sinif({
+class SinifBilgisi extends InheritedWidget {
+  const SinifBilgisi({
     Key? key,
+    required Widget child,
     required this.sinif,
     required this.baslik,
     required this.ogrenciler,
     required this.yeniOgrenciEkle,
-  }) : super(key: key);
+  }) : super(key: key, child: child);
 
   final int sinif;
   final String baslik;
   final List<String> ogrenciler;
   final void Function(String yeniOgrenci) yeniOgrenciEkle;
 
+  static SinifBilgisi of(BuildContext context) {
+    final SinifBilgisi? result = context.dependOnInheritedWidgetOfExactType<SinifBilgisi>();
+    assert(result != null, 'No SinifBilgisi found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(SinifBilgisi old) {
+    return sinif != old.sinif ||
+        baslik != old.baslik ||
+        ogrenciler != old.ogrenciler ||
+        yeniOgrenciEkle !=old.yeniOgrenciEkle;
+  }
+}
+
+class Sinif extends StatelessWidget {
+  const Sinif({
+    Key? key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final sinifBilgisi = SinifBilgisi.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,7 +120,7 @@ class Sinif extends StatelessWidget {
               color: Colors.red,
             ),
             Text(
-              "$sinif. Sınıf",
+              "${sinifBilgisi.sinif}. Sınıf",
               textScaleFactor: 2,
             ),
             const Icon(
@@ -106,11 +130,11 @@ class Sinif extends StatelessWidget {
           ],
         ),
         Text(
-          baslik,
+          sinifBilgisi.baslik,
           textScaleFactor: 1.5,
         ),
-        OgrenciListesi(ogrenciler: ogrenciler),
-        OgrenciEkleme(yeniOgrrenciEkle: yeniOgrenciEkle),
+        const OgrenciListesi(),
+        const OgrenciEkleme(),
       ],
     );
   }
@@ -119,17 +143,15 @@ class Sinif extends StatelessWidget {
 class OgrenciListesi extends StatelessWidget {
   const OgrenciListesi({
     Key? key,
-    required this.ogrenciler,
   }) : super(key: key);
-
-  final List<String> ogrenciler;
 
   @override
   Widget build(BuildContext context) {
+    final sinifBilgisi = SinifBilgisi.of(context); //sınıf bilgisi referansı
     return Column(
       mainAxisSize: MainAxisSize.min,
       children:[
-        for (final o in ogrenciler)
+        for (final o in sinifBilgisi.ogrenciler)
           Text(
               o
           ),
@@ -141,10 +163,8 @@ class OgrenciListesi extends StatelessWidget {
 class OgrenciEkleme extends StatefulWidget {
 
   const OgrenciEkleme({
-    Key? key, required this.yeniOgrrenciEkle,
+    Key? key,
   }) : super(key: key);
-
-  final void Function(String yeniOgrenci) yeniOgrrenciEkle;
 
   @override
   State<OgrenciEkleme> createState() => _OgrenciEklemeState();
@@ -161,6 +181,7 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
 
   @override
   Widget build(BuildContext context) {
+    final sinifBilgisi = SinifBilgisi.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -168,18 +189,14 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
           controller: controller,
           onChanged: (value) {
             setState(() {
-
             });
           },
         ),
         ElevatedButton(
           onPressed: controller.text.isEmpty? null :  (){
             final yeniOgrenci = controller.text;
-            widget.yeniOgrrenciEkle(yeniOgrenci);
+            sinifBilgisi.yeniOgrenciEkle(yeniOgrenci);
             controller.text = "";
-            // setState(() {
-            //   ogrenciler.add("yeni");
-            //  });
           },
           child: const Text(
             "Ekle",
