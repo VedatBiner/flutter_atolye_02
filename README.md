@@ -3,3 +3,4 @@
 Veri Akışı
 Inherited Widget
 Stack Widget
+Adaptive tasarım (Web + tablet)

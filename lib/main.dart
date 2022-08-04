@@ -1,7 +1,8 @@
 // Tasarım Örneği - Biraz daha Widget ağacı
 // Veri akışı - Inherited Widget
+// stack ve adaptive tasarım
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     print("MyHomePageState Build ...");
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -64,15 +65,33 @@ class _MyHomePageState extends State<MyHomePage> {
         yeniOgrenciEkle: yeniOgrenciEkle,
         child: Stack(
           fit: StackFit.expand,
-          children: const [
-            ArkaPlan(),
+          children: [
+            const ArkaPlan(),
             Positioned(
-                top: 100,
-                left: 10,
-                right: 10,
-                child: Sinif()
+              top: 100,
+              left: 10,
+              right: 10,
+              child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    print("Constraints.maxwidth: ${constraints.maxWidth}");
+                    if (constraints.maxWidth > 450) {
+                      return Row(
+                        children: const [
+                          Sinif(),
+                          Expanded(
+                              child: Text(
+                                  "Seçili olan öğrencinin detayları : "
+                              )
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Sinif();
+                    }
+                  }
+              ),
             ),
-            Positioned(
+            const Positioned(
                 bottom: 20,
                 left: 10,
                 right: 10,
@@ -134,7 +153,7 @@ class Sinif extends StatelessWidget {
           children: [
             const Icon(
               Icons.star,
-              color: Colors.green,
+              color: Colors.red,
             ),
             Text(
               "${sinifBilgisi.sinif}. Sınıf",
@@ -151,7 +170,6 @@ class Sinif extends StatelessWidget {
           textScaleFactor: 1.5,
         ),
         const OgrenciListesi(),
-
       ],
     );
   }
@@ -241,7 +259,7 @@ class ArkaPlan extends StatelessWidget {
         child: Container(
           width: 50,
           height: 100,
-          color: Colors.green[50],
+          color: Colors.grey.shade100,
         ),
       ),
     );
