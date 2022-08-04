@@ -1,4 +1,5 @@
 # flutter_atolye_02
 ## Google Dijital Atölye Calışmaları
 Veri Akışı
-Inherited Widgets
+Inherited Widget
+Stack Widget

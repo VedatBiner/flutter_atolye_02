@@ -62,7 +62,23 @@ class _MyHomePageState extends State<MyHomePage> {
         baslik: baslik,
         ogrenciler: ogrenciler,
         yeniOgrenciEkle: yeniOgrenciEkle,
-        child: const Sinif(
+        child: Stack(
+          fit: StackFit.expand,
+          children: const [
+            ArkaPlan(),
+            Positioned(
+                top: 100,
+                left: 10,
+                right: 10,
+                child: Sinif()
+            ),
+            Positioned(
+                bottom: 20,
+                left: 10,
+                right: 10,
+                child: OgrenciEkleme()
+            ),
+          ],
         ),
       ),
     );
@@ -108,6 +124,7 @@ class Sinif extends StatelessWidget {
   Widget build(BuildContext context) {
     final sinifBilgisi = SinifBilgisi.of(context);
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -117,7 +134,7 @@ class Sinif extends StatelessWidget {
           children: [
             const Icon(
               Icons.star,
-              color: Colors.red,
+              color: Colors.green,
             ),
             Text(
               "${sinifBilgisi.sinif}. Sınıf",
@@ -134,7 +151,7 @@ class Sinif extends StatelessWidget {
           textScaleFactor: 1.5,
         ),
         const OgrenciListesi(),
-        const OgrenciEkleme(),
+
       ],
     );
   }
@@ -192,17 +209,41 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
             });
           },
         ),
-        ElevatedButton(
-          onPressed: controller.text.isEmpty? null :  (){
-            final yeniOgrenci = controller.text;
-            sinifBilgisi.yeniOgrenciEkle(yeniOgrenci);
-            controller.text = "";
-          },
-          child: const Text(
-            "Ekle",
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: ElevatedButton(
+            onPressed: controller.text.isEmpty? null :  (){
+              final yeniOgrenci = controller.text;
+              sinifBilgisi.yeniOgrenciEkle(yeniOgrenci);
+              controller.text = "";
+            },
+            child: const Text(
+              "Ekle",
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class ArkaPlan extends StatelessWidget {
+  const ArkaPlan({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+        child: Container(
+          width: 50,
+          height: 100,
+          color: Colors.green[50],
+        ),
+      ),
     );
   }
 }
