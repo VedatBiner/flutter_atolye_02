@@ -1,11 +1,9 @@
 // Tasarım Örneği - Biraz daha Widget ağacı
 // Resim - video ekleme
-// Navigasyon Örneği
+// Navigasyon Örneği - Ekranlar arası bilgi taşıma
+// WillPop Scope
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -85,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 } else {
-                  return const Sinif();
+                  return Sinif();
                 }
               }),
             ),
@@ -170,14 +168,18 @@ class Sinif extends StatelessWidget {
           child: const Text(
             "Yeni sayfaya git ...",
           ),
-          onPressed: () {
-            Navigator.of(context).push(
+          onPressed: () async {
+            final cevap = await Navigator.of(context).push<bool>(
               MaterialPageRoute(
                 builder: (context) {
-                  return const Ekran2();
+                  return const VideoEkrani("Videoyu beğendiniz mi?");
                 },
               ),
             );
+            print("cevap geldi : $cevap");
+            if (cevap == true) {
+              print("Beğendi !!!");
+            }
           },
         ),
       ],
@@ -185,10 +187,12 @@ class Sinif extends StatelessWidget {
   }
 }
 
-class Ekran2 extends StatelessWidget {
-  const Ekran2({
-    Key? key,
-  }) : super(key: key);
+class VideoEkrani extends StatelessWidget {
+  final String mesaj;
+  const VideoEkrani(
+      this.mesaj, {
+        Key? key,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -198,11 +202,25 @@ class Ekran2 extends StatelessWidget {
         child: Column(
           children: [
             const Video(),
+            const SizedBox(
+              height: 50,
+            ),
+            Text(mesaj),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
-              child: const Text("Merhaba"),
+              child: const Text(
+                "Evet",
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text(
+                "Hayır",
+              ),
             ),
           ],
         ),
