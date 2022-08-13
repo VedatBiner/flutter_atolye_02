@@ -1,8 +1,12 @@
 // Tasarım Örneği - Biraz daha Widget ağacı
-// Veri akışı - Inherited Widget
-// stack ve adaptive tasarım
+// Resim - video ekleme
+// Navigasyon Örneği
+
 import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:video_player/video_player.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +37,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   void initState() {
     super.initState();
@@ -44,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var baslik = "Öğrenciler";
   var ogrenciler = ["Mehmet", "Vedat", "Zeynep"];
 
-  void yeniOgrenciEkle(String yeniOgrenci){
+  void yeniOgrenciEkle(String yeniOgrenci) {
     setState(() {
       ogrenciler = [...ogrenciler, yeniOgrenci];
     });
@@ -71,32 +74,23 @@ class _MyHomePageState extends State<MyHomePage> {
               top: 100,
               left: 10,
               right: 10,
-              child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    print("Constraints.maxwidth: ${constraints.maxWidth}");
-                    if (constraints.maxWidth > 450) {
-                      return Row(
-                        children: const [
-                          Sinif(),
-                          Expanded(
-                              child: Text(
-                                  "Seçili olan öğrencinin detayları : "
-                              )
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Sinif();
-                    }
-                  }
-              ),
+              child: LayoutBuilder(builder: (context, constraints) {
+                print("Constraints.maxwidth: ${constraints.maxWidth}");
+                if (constraints.maxWidth > 450) {
+                  return Row(
+                    children: const [
+                      Sinif(),
+                      Expanded(
+                          child: Text("Seçili olan öğrencinin detayları : ")),
+                    ],
+                  );
+                } else {
+                  return const Sinif();
+                }
+              }),
             ),
             const Positioned(
-                bottom: 20,
-                left: 10,
-                right: 10,
-                child: OgrenciEkleme()
-            ),
+                bottom: 20, left: 10, right: 10, child: OgrenciEkleme()),
           ],
         ),
       ),
@@ -120,7 +114,8 @@ class SinifBilgisi extends InheritedWidget {
   final void Function(String yeniOgrenci) yeniOgrenciEkle;
 
   static SinifBilgisi of(BuildContext context) {
-    final SinifBilgisi? result = context.dependOnInheritedWidgetOfExactType<SinifBilgisi>();
+    final SinifBilgisi? result =
+    context.dependOnInheritedWidgetOfExactType<SinifBilgisi>();
     assert(result != null, 'No SinifBilgisi found in context');
     return result!;
   }
@@ -130,7 +125,7 @@ class SinifBilgisi extends InheritedWidget {
     return sinif != old.sinif ||
         baslik != old.baslik ||
         ogrenciler != old.ogrenciler ||
-        yeniOgrenciEkle !=old.yeniOgrenciEkle;
+        yeniOgrenciEkle != old.yeniOgrenciEkle;
   }
 }
 
@@ -170,6 +165,98 @@ class Sinif extends StatelessWidget {
           textScaleFactor: 1.5,
         ),
         const OgrenciListesi(),
+        // Image.network("https://picsum.photos/200/300"),
+        ElevatedButton(
+          child: const Text(
+            "Yeni sayfaya git ...",
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const Ekran2();
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class Ekran2 extends StatelessWidget {
+  const Ekran2({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          children: [
+            const Video(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Merhaba"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Video extends StatefulWidget {
+  const Video({Key? key}) : super(key: key);
+
+  @override
+  State<Video> createState() => _VideoState();
+}
+
+class _VideoState extends State<Video> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    _controller = VideoPlayerController.network(
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          child: _controller.value.isInitialized
+              ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+              : Container(),
+        ),
+        ElevatedButton(
+          child: const Text(
+            "Play / Pause",
+          ),
+          onPressed: () {
+            setState(() {
+              _controller.value.isPlaying
+                  ? _controller.pause()
+                  : _controller.play();
+            });
+          },
+        )
       ],
     );
   }
@@ -185,18 +272,14 @@ class OgrenciListesi extends StatelessWidget {
     final sinifBilgisi = SinifBilgisi.of(context); //sınıf bilgisi referansı
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children:[
-        for (final o in sinifBilgisi.ogrenciler)
-          Text(
-              o
-          ),
+      children: [
+        for (final o in sinifBilgisi.ogrenciler) Text(o),
       ],
     );
   }
 }
 
 class OgrenciEkleme extends StatefulWidget {
-
   const OgrenciEkleme({
     Key? key,
   }) : super(key: key);
@@ -209,7 +292,7 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
   final controller = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     controller.dispose();
     super.dispose();
   }
@@ -223,14 +306,15 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
         TextField(
           controller: controller,
           onChanged: (value) {
-            setState(() {
-            });
+            setState(() {});
           },
         ),
         Align(
           alignment: Alignment.bottomLeft,
           child: ElevatedButton(
-            onPressed: controller.text.isEmpty? null :  (){
+            onPressed: controller.text.isEmpty
+                ? null
+                : () {
               final yeniOgrenci = controller.text;
               sinifBilgisi.yeniOgrenciEkle(yeniOgrenci);
               controller.text = "";
@@ -253,14 +337,10 @@ class ArkaPlan extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue,
+      color: Colors.white70,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-        child: Container(
-          width: 50,
-          height: 100,
-          color: Colors.grey.shade100,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
+        child: Image.asset("images/homepage_img_8.png"),
       ),
     );
   }
