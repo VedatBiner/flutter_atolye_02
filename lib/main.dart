@@ -2,7 +2,7 @@
 // Resim - video ekleme
 // Navigasyon Örneği - Ekranlar arası bilgi taşıma
 // WillPop Scope, Named Routes
-// Asenkron Programlama - Future nesnesi
+// Asenkron Programlama - Async / Await
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const ArkaPlan(),
+            ArkaPlan(),
             Positioned(
               top: 100,
               left: 10,
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 } else {
-                  return const Sinif();
+                  return Sinif();
                 }
               }),
             ),
@@ -178,48 +178,52 @@ class Sinif extends StatelessWidget {
           textScaleFactor: 1.5,
         ),
         const OgrenciListesi(),
-        // Image.network("https://picsum.photos/200/300"),
         ElevatedButton(
           child: const Text(
             "Yeni sayfaya git ...",
           ),
           onPressed: () {
-            Future<bool?> pushFuture = Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                builder: (context) {
-                  return const VideoEkrani("Videoyu beğendiniz mi?");
-                },
-              ),
-            );
-            pushFuture.then((bool? cevap) {
-              print("cevap geldi : $cevap");
-              if (cevap == true) {
-                print("Beğendi !!!");
-                throw "HATA OLSUN ...";
-                return Future.value(true);
-              } else {
-                return Navigator.of(context).push<bool>(
-                  MaterialPageRoute(builder: (context) {
-                    return const VideoEkrani("Keşke beğenseniz ...");
-                  }),
-                );
-              }
-            }).then((value) {
-              if (value == true) {
-                print("BEĞENDİNİZ !!!");
-              }
-            }).onError((error, stackTrace) {
-              // hata aldığında çalışacak fonksiyon
-              print("HATA !!!");
-            }).whenComplete(() {
-              print("*** İş bitti ...");
-            });
-
-            print("Bu arada yapılan işler");
+            sor(context);
           },
         ),
       ],
     );
+  }
+
+  Future<void> sor(BuildContext context) async {
+    try {
+      bool? cevap = await cevabiAl(context);
+
+      print("cevap geldi : $cevap");
+      if (cevap == true) {
+        print("Beğendi !!!");
+        throw "HATA OLSUN ...";
+      } else {
+        cevap = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(builder: (context) {
+            return const VideoEkrani("Keşke beğenseniz ...");
+          }),
+        );
+      }
+      if (cevap == true) {
+        print("BEĞENDİNİZ !!!");
+      }
+    } catch (e) {
+      print("HATA !!!");
+    } finally {
+      print("*** İş bitti ...");
+    }
+  }
+
+  Future<bool?> cevabiAl(BuildContext context) async {
+    bool? cevap = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) {
+          return const VideoEkrani("Videoyu beğendiniz mi?");
+        },
+      ),
+    );
+    return cevap;
   }
 }
 
