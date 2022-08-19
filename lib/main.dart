@@ -2,6 +2,7 @@
 // Resim - video ekleme
 // Navigasyon Örneği - Ekranlar arası bilgi taşıma
 // WillPop Scope, Named Routes
+// Asenkron Programlama - Future nesnesi
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -81,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            ArkaPlan(),
+            const ArkaPlan(),
             Positioned(
               top: 100,
               left: 10,
@@ -97,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 } else {
-                  return Sinif();
+                  return const Sinif();
                 }
               }),
             ),
@@ -182,18 +183,39 @@ class Sinif extends StatelessWidget {
           child: const Text(
             "Yeni sayfaya git ...",
           ),
-          onPressed: () async {
-            final cevap = await Navigator.of(context).push<bool>(
+          onPressed: () {
+            Future<bool?> pushFuture = Navigator.of(context).push<bool>(
               MaterialPageRoute(
                 builder: (context) {
                   return const VideoEkrani("Videoyu beğendiniz mi?");
                 },
               ),
             );
-            print("cevap geldi : $cevap");
-            if (cevap == true) {
-              print("Beğendi !!!");
-            }
+            pushFuture.then((bool? cevap) {
+              print("cevap geldi : $cevap");
+              if (cevap == true) {
+                print("Beğendi !!!");
+                throw "HATA OLSUN ...";
+                return Future.value(true);
+              } else {
+                return Navigator.of(context).push<bool>(
+                  MaterialPageRoute(builder: (context) {
+                    return const VideoEkrani("Keşke beğenseniz ...");
+                  }),
+                );
+              }
+            }).then((value) {
+              if (value == true) {
+                print("BEĞENDİNİZ !!!");
+              }
+            }).onError((error, stackTrace) {
+              // hata aldığında çalışacak fonksiyon
+              print("HATA !!!");
+            }).whenComplete(() {
+              print("*** İş bitti ...");
+            });
+
+            print("Bu arada yapılan işler");
           },
         ),
       ],
@@ -220,7 +242,10 @@ class VideoEkrani extends StatelessWidget {
         body: Center(
           child: Column(
             children: [
-              const Video(),
+              // const Video(),
+              const Placeholder(
+                fallbackHeight: 150,
+              ),
               const SizedBox(
                 height: 50,
               ),
