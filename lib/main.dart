@@ -1,9 +1,12 @@
 // Tasarım Örneği - Biraz daha Widget ağacı
 // Resim - video ekleme
 // Navigasyon Örneği - Ekranlar arası bilgi taşıma
-// WillPop Scope
+// WillPop Scope, Named Routes
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -20,7 +23,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => const MyHomePage(title: "Flutter Dome Home Page"),
+        "/settings": (context) => SettingsPage(),
+      },
     );
   }
 }
@@ -58,6 +66,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              print("Settings ...");
+              Navigator.of(context).pushNamed("/settings");
+            },
+          )
+        ],
       ),
       body: SinifBilgisi(
         sinif: sinif,
@@ -67,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const ArkaPlan(),
+            ArkaPlan(),
             Positioned(
               top: 100,
               left: 10,
@@ -196,33 +213,39 @@ class VideoEkrani extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          children: [
-            const Video(),
-            const SizedBox(
-              height: 50,
-            ),
-            Text(mesaj),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text(
-                "Evet",
+    return WillPopScope(
+      onWillPop: () async {
+        print("pop edecek");
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            children: [
+              const Video(),
+              const SizedBox(
+                height: 50,
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text(
-                "Hayır",
+              Text(mesaj),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).maybePop(true);
+                },
+                child: const Text(
+                  "Evet",
+                ),
               ),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).maybePop(false);
+                },
+                child: const Text(
+                  "Hayır",
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -359,6 +382,22 @@ class ArkaPlan extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
         child: Image.asset("images/homepage_img_8.png"),
+      ),
+    );
+  }
+}
+
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Settings Page"),
+      ),
+      body: Container(
+        child: const Text("Settings Page"),
       ),
     );
   }
