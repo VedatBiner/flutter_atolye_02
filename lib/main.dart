@@ -4,9 +4,6 @@
 // WillPop Scope, Named Routes
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -27,7 +24,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/": (context) => const MyHomePage(title: "Flutter Dome Home Page"),
-        "/settings": (context) => SettingsPage(),
+        "/settings": (context) => const SettingsPage(),
       },
     );
   }
