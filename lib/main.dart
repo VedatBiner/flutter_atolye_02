@@ -2,10 +2,12 @@
 // Resim - video ekleme
 // Navigasyon Örneği - Ekranlar arası bilgi taşıma
 // WillPop Scope, Named Routes
-// Asenkron Programlama - Async / Await
+// Asenkron Programlama - Stateful widget
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import 'album.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,8 +26,8 @@ class MyApp extends StatelessWidget {
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       initialRoute: "/",
       routes: {
-        "/": (context) => const MyHomePage(title: "Flutter Dome Home Page"),
-        "/settings": (context) => const SettingsPage(),
+        "/": (context) => const MyHomePage(title : "Flutter Dome Home Page"),
+        "/settings": (context) => SettingsPage(),
       },
     );
   }
@@ -41,6 +43,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var baslik = "Öğrenciler";
   var ogrenciler = ["Mehmet", "Vedat", "Zeynep"];
 
-  void yeniOgrenciEkle(String yeniOgrenci) {
+  void yeniOgrenciEkle(String yeniOgrenci){
     setState(() {
       ogrenciler = [...ogrenciler, yeniOgrenci];
     });
@@ -87,23 +90,32 @@ class _MyHomePageState extends State<MyHomePage> {
               top: 100,
               left: 10,
               right: 10,
-              child: LayoutBuilder(builder: (context, constraints) {
-                print("Constraints.maxwidth: ${constraints.maxWidth}");
-                if (constraints.maxWidth > 450) {
-                  return Row(
-                    children: const [
-                      Sinif(),
-                      Expanded(
-                          child: Text("Seçili olan öğrencinin detayları : ")),
-                    ],
-                  );
-                } else {
-                  return Sinif();
-                }
-              }),
+              child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    print("Constraints.maxwidth: ${constraints.maxWidth}");
+                    if (constraints.maxWidth > 450) {
+                      return Row(
+                        children: const [
+                          Sinif(),
+                          Expanded(
+                              child: Text(
+                                  "Seçili olan öğrencinin detayları : "
+                              )
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Sinif();
+                    }
+                  }
+              ),
             ),
             const Positioned(
-                bottom: 20, left: 10, right: 10, child: OgrenciEkleme()),
+                bottom: 20,
+                left: 10,
+                right: 10,
+                child: OgrenciEkleme()
+            ),
           ],
         ),
       ),
@@ -127,8 +139,7 @@ class SinifBilgisi extends InheritedWidget {
   final void Function(String yeniOgrenci) yeniOgrenciEkle;
 
   static SinifBilgisi of(BuildContext context) {
-    final SinifBilgisi? result =
-    context.dependOnInheritedWidgetOfExactType<SinifBilgisi>();
+    final SinifBilgisi? result = context.dependOnInheritedWidgetOfExactType<SinifBilgisi>();
     assert(result != null, 'No SinifBilgisi found in context');
     return result!;
   }
@@ -138,7 +149,7 @@ class SinifBilgisi extends InheritedWidget {
     return sinif != old.sinif ||
         baslik != old.baslik ||
         ogrenciler != old.ogrenciler ||
-        yeniOgrenciEkle != old.yeniOgrenciEkle;
+        yeniOgrenciEkle !=old.yeniOgrenciEkle;
   }
 }
 
@@ -183,7 +194,11 @@ class Sinif extends StatelessWidget {
             "Yeni sayfaya git ...",
           ),
           onPressed: () {
-            sor(context);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const AlbumPage(),
+            ));
+
+            // sor(context);
           },
         ),
       ],
@@ -229,15 +244,14 @@ class Sinif extends StatelessWidget {
 
 class VideoEkrani extends StatelessWidget {
   final String mesaj;
-  const VideoEkrani(
-      this.mesaj, {
-        Key? key,
-      }) : super(key: key);
+  const VideoEkrani(this.mesaj, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
+      onWillPop: () async{
         print("pop edecek");
         return true;
       },
@@ -253,7 +267,9 @@ class VideoEkrani extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
-              Text(mesaj),
+              Text(
+                  mesaj
+              ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).maybePop(true);
@@ -329,6 +345,7 @@ class _VideoState extends State<Video> {
   }
 }
 
+
 class OgrenciListesi extends StatelessWidget {
   const OgrenciListesi({
     Key? key,
@@ -339,14 +356,18 @@ class OgrenciListesi extends StatelessWidget {
     final sinifBilgisi = SinifBilgisi.of(context); //sınıf bilgisi referansı
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final o in sinifBilgisi.ogrenciler) Text(o),
+      children:[
+        for (final o in sinifBilgisi.ogrenciler)
+          Text(
+              o
+          ),
       ],
     );
   }
 }
 
 class OgrenciEkleme extends StatefulWidget {
+
   const OgrenciEkleme({
     Key? key,
   }) : super(key: key);
@@ -359,7 +380,7 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
   final controller = TextEditingController();
 
   @override
-  void dispose() {
+  void dispose(){
     controller.dispose();
     super.dispose();
   }
@@ -373,15 +394,14 @@ class _OgrenciEklemeState extends State<OgrenciEkleme> {
         TextField(
           controller: controller,
           onChanged: (value) {
-            setState(() {});
+            setState(() {
+            });
           },
         ),
         Align(
           alignment: Alignment.bottomLeft,
           child: ElevatedButton(
-            onPressed: controller.text.isEmpty
-                ? null
-                : () {
+            onPressed: controller.text.isEmpty? null :  (){
               final yeniOgrenci = controller.text;
               sinifBilgisi.yeniOgrenciEkle(yeniOgrenci);
               controller.text = "";
@@ -428,3 +448,4 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
+
