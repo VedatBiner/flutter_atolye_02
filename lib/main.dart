@@ -1,5 +1,5 @@
 // Tasarım Örneği
-// Center, Align, AspectRatio, PhysicalModel, ClipRRect, DecoratedBox
+// ListView
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -117,12 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const ArkaPlan(),
+            // ArkaPlan(),
             Positioned(
-              top: 100,
+              top: 10,
               left: 10,
               right: 10,
-              bottom: 0,
+              bottom: 120,
               child: LayoutBuilder(builder: (context, constraints) {
                 print("Constraints.maxwidth: ${constraints.maxWidth}");
                 if (constraints.maxWidth > 450) {
@@ -134,9 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 } else {
-                  return const SingleChildScrollView(
-                    // child: Sinif()
-                  );
+                  return const Sinif();
                 }
               }),
             ),
@@ -149,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           print("Merhaba");
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("MERHABA")),
+            SnackBar(content: const Text("MERHABA")),
           );
         },
         child: Text("FAB"),
@@ -198,7 +196,6 @@ class Sinif extends StatelessWidget {
   Widget build(BuildContext context) {
     final sinifBilgisi = SinifBilgisi.of(context);
     return Column(
-      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -228,7 +225,9 @@ class Sinif extends StatelessWidget {
             textScaleFactor: 1.5,
           ),
         ),
-        const OgrenciListesi(),
+        const Expanded(
+            child: OgrenciListesi()
+        ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.red,
@@ -240,7 +239,7 @@ class Sinif extends StatelessWidget {
             final ogrenciler = SinifBilgisi.of(context).ogrenciler;
             for (final ogrenci in ogrenciler) {
               print("$ogrenci yükleniyor");
-              await Future.delayed(const Duration(seconds: 1));
+              await Future.delayed(Duration(seconds: 1));
               print("$ogrenci yüklendi");
             }
             print("Tüm Öğrenciler yüklendi");
@@ -252,7 +251,7 @@ class Sinif extends StatelessWidget {
           ),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const AlbumPage(),
+              builder: (context) => AlbumPage(),
             ));
             // sor(context);
           },
@@ -408,19 +407,24 @@ class OgrenciListesi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sinifBilgisi = SinifBilgisi.of(context); //sınıf bilgisi referansı
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final o in sinifBilgisi.ogrenciler)
-          ...[
-            Text(
-                o
-            ),
-            const SizedBox(
-              height: 16,
-            )
-          ],
-      ],
+    return ListView.separated(
+      itemBuilder: (context, index){
+        return ListTile(
+          key: ValueKey(index),
+          leading: const Icon(
+              Icons.circle
+          ),
+          title: Text(
+              sinifBilgisi.ogrenciler[index]
+          ),
+        );
+      },
+      itemCount: sinifBilgisi.ogrenciler.length,
+      separatorBuilder: (BuildContext context, int index){
+        return const Divider(
+            color: Colors.black
+        );
+      },
     );
   }
 }
@@ -487,10 +491,16 @@ class ArkaPlan extends StatelessWidget {
       child: PhysicalModel(
         color: Colors.white,
         shadowColor: Colors.green,
-        elevation: 20,
+        elevation: 30,
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(50)),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.green,
+              width: 10,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(50)),
+          ),
           child: FractionallySizedBox(
             widthFactor: 0.75,
             child: AspectRatio(
