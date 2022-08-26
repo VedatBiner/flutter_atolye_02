@@ -1,8 +1,5 @@
-// Tasarım Örneği - Biraz daha Widget ağacı
-// Resim - video ekleme
-// Navigasyon Örneği - Ekranlar arası bilgi taşıma
-// WillPop Scope, Named Routes
-// Asenkron Programlama - Stateful widget
+// Tasarım Örneği - SafeArea
+// drawer, scaffold Messenger Kullanımı
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -21,12 +18,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       initialRoute: "/",
       routes: {
-        "/": (context) => const MyHomePage(title: "Flutter Dome Home Page"),
+        "/": (context) => const MyHomePage(title: "Flutter Demo Home Page"),
         "/settings": (context) => const SettingsPage(),
       },
     );
@@ -64,14 +61,50 @@ class _MyHomePageState extends State<MyHomePage> {
     print("MyHomePageState Build ...");
 
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Item 1'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: Icon(Icons.settings),
             onPressed: () {
               print("Settings ...");
               Navigator.of(context).pushNamed("/settings");
+            },
+          ),
+          TextButton(
+            child: const Text(
+              "Merhaba",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              print("Merhaba");
             },
           )
         ],
@@ -108,6 +141,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 bottom: 20, left: 10, right: 10, child: OgrenciEkleme()),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print("Merhaba");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("MERHABA")),
+          );
+        },
+        child: Text("FAB"),
       ),
     );
   }
@@ -191,7 +233,7 @@ class Sinif extends StatelessWidget {
             final ogrenciler = SinifBilgisi.of(context).ogrenciler;
             for (final ogrenci in ogrenciler) {
               print("$ogrenci yükleniyor");
-              await Future.delayed(Duration(seconds: 1));
+              await Future.delayed(const Duration(seconds: 1));
               print("$ogrenci yüklendi");
             }
             print("Tüm Öğrenciler yüklendi");
