@@ -1,7 +1,11 @@
 // Tasarım Örneği - SafeArea
 // drawer, scaffold Messenger Kullanımı
+// sizedbox, padding, container
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 import 'album.dart';
@@ -90,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               print("Settings ...");
               Navigator.of(context).pushNamed("/settings");
@@ -117,11 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            ArkaPlan(),
+            const ArkaPlan(),
             Positioned(
               top: 100,
               left: 10,
               right: 10,
+              bottom: 0,
               child: LayoutBuilder(builder: (context, constraints) {
                 print("Constraints.maxwidth: ${constraints.maxWidth}");
                 if (constraints.maxWidth > 450) {
@@ -133,7 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 } else {
-                  return Sinif();
+                  return const SingleChildScrollView(
+                      child: Sinif()
+                  );
                 }
               }),
             ),
@@ -217,11 +224,15 @@ class Sinif extends StatelessWidget {
             ),
           ],
         ),
-        Text(
-          sinifBilgisi.baslik,
-          textScaleFactor: 1.5,
+        Container(
+          color: Colors.yellowAccent,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+          child: Text(
+            sinifBilgisi.baslik,
+            textScaleFactor: 1.5,
+          ),
         ),
-        const OgrenciListesi(),
+        OgrenciListesi(),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.red,
@@ -247,7 +258,6 @@ class Sinif extends StatelessWidget {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const AlbumPage(),
             ));
-
             // sor(context);
           },
         ),
@@ -405,7 +415,15 @@ class OgrenciListesi extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (final o in sinifBilgisi.ogrenciler) Text(o),
+        for (final o in sinifBilgisi.ogrenciler)
+          ...[
+            Text(
+                o
+            ),
+            const SizedBox(
+              height: 16,
+            )
+          ],
       ],
     );
   }
