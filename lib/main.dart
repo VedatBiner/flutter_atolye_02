@@ -1,10 +1,11 @@
 // Tasarım Örneği
-// ListView
+// Formlar
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'album.dart';
+import 'input_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -109,45 +110,52 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: SinifBilgisi(
-        sinif: sinif,
-        baslik: baslik,
-        ogrenciler: ogrenciler,
-        yeniOgrenciEkle: yeniOgrenciEkle,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // ArkaPlan(),
-            Positioned(
-              top: 10,
-              left: 10,
-              right: 10,
-              bottom: 120,
-              child: LayoutBuilder(builder: (context, constraints) {
-                print("Constraints.maxwidth: ${constraints.maxWidth}");
-                if (constraints.maxWidth > 450) {
-                  return Row(
-                    children: const [
-                      Sinif(),
-                      Expanded(
-                          child: Text("Seçili olan öğrencinin detayları : ")),
-                    ],
-                  );
-                } else {
-                  return const Sinif();
-                }
-              }),
-            ),
-            const Positioned(
-                bottom: 20, left: 10, right: 10, child: OgrenciEkleme()),
-          ],
+      body: DefaultTextStyle(
+        style: const TextStyle(
+          color: Colors.green,
+          fontWeight: FontWeight.bold,
+          fontSize: 32,
+        ),
+        child: SinifBilgisi(
+          sinif: sinif,
+          baslik: baslik,
+          ogrenciler: ogrenciler,
+          yeniOgrenciEkle: yeniOgrenciEkle,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              const ArkaPlan(),
+              Positioned(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 120,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  print("Constraints.maxwidth: ${constraints.maxWidth}");
+                  if (constraints.maxWidth > 450) {
+                    return Row(
+                      children: const [
+                        Sinif(),
+                        Expanded(
+                            child: Text("Seçili olan öğrencinin detayları : ")),
+                      ],
+                    );
+                  } else {
+                    return const Sinif();
+                  }
+                }),
+              ),
+              const Positioned(
+                  bottom: 20, left: 10, right: 10, child: OgrenciEkleme()),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("Merhaba");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: const Text("MERHABA")),
+            const SnackBar(content: Text("MERHABA")),
           );
         },
         child: Text("FAB"),
@@ -210,6 +218,10 @@ class Sinif extends StatelessWidget {
             Text(
               "${sinifBilgisi.sinif}. Sınıf",
               textScaleFactor: 2,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+              ),
             ),
             const Icon(
               Icons.star,
@@ -232,14 +244,25 @@ class Sinif extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.red,
           ),
-          child: const Text(
-            "Öğrencileri yükle ...",
+          child: RichText(
+            text: const TextSpan(
+              text: "Öğrencileri ",
+              children: <TextSpan>[
+                TextSpan(
+                  text: "yükle ...",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
+            ),
           ),
           onPressed: () async {
             final ogrenciler = SinifBilgisi.of(context).ogrenciler;
             for (final ogrenci in ogrenciler) {
               print("$ogrenci yükleniyor");
-              await Future.delayed(Duration(seconds: 1));
+              await Future.delayed(const Duration(seconds: 1));
               print("$ogrenci yüklendi");
             }
             print("Tüm Öğrenciler yüklendi");
@@ -251,7 +274,18 @@ class Sinif extends StatelessWidget {
           ),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AlbumPage(),
+              builder: (context) => const AlbumPage(),
+            ));
+            // sor(context);
+          },
+        ),
+        ElevatedButton(
+          child: const Text(
+            "Girdi Sayfası",
+          ),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const InputPage(),
             ));
             // sor(context);
           },
@@ -414,8 +448,15 @@ class OgrenciListesi extends StatelessWidget {
           leading: const Icon(
               Icons.circle
           ),
-          title: Text(
-              sinifBilgisi.ogrenciler[index]
+          title: Center(
+            child: SizedBox(
+              width: 50,
+              child: Text(
+                sinifBilgisi.ogrenciler[index],
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
+            ),
           ),
         );
       },
@@ -499,7 +540,7 @@ class ArkaPlan extends StatelessWidget {
               color: Colors.green,
               width: 10,
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(50)),
+            borderRadius: BorderRadius.all(const Radius.circular(50)),
           ),
           child: FractionallySizedBox(
             widthFactor: 0.75,
@@ -507,9 +548,13 @@ class ArkaPlan extends StatelessWidget {
               aspectRatio: 1,
               child: Container(
                 // color: Colors.grey.shade800,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
-                  child: Image.asset("images/homepage_img_8.png"),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
+                  child: Image(
+                    image: AssetImage(
+                        "images/homepage_img_8.png"
+                    ),
+                  ),
                 ),
               ),
             ),
