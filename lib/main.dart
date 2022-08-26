@@ -1,11 +1,7 @@
-// Tasarım Örneği - SafeArea
-// drawer, scaffold Messenger Kullanımı
-// sizedbox, padding, container
+// Tasarım Örneği
+// Center, Align, AspectRatio, PhysicalModel, ClipRRect, DecoratedBox
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 import 'album.dart';
@@ -139,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 } else {
                   return const SingleChildScrollView(
-                      child: Sinif()
+                    // child: Sinif()
                   );
                 }
               }),
@@ -232,7 +228,7 @@ class Sinif extends StatelessWidget {
             textScaleFactor: 1.5,
           ),
         ),
-        OgrenciListesi(),
+        const OgrenciListesi(),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.red,
@@ -486,11 +482,29 @@ class ArkaPlan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white70,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
-        child: Image.asset("images/homepage_img_8.png"),
+    return Align(
+      alignment: Alignment.center,
+      child: PhysicalModel(
+        color: Colors.white,
+        shadowColor: Colors.green,
+        elevation: 20,
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(50)),
+          child: FractionallySizedBox(
+            widthFactor: 0.75,
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                // color: Colors.grey.shade800,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 16.0),
+                  child: Image.asset("images/homepage_img_8.png"),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
