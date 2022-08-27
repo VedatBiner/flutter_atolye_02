@@ -1,5 +1,6 @@
 // Tasarım Örneği
-// Formlar - Validation ve save özellikleri
+// Formlar -
+// Transform / Fittedbox / FractionallySizedbox
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -91,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               print("Settings ...");
               Navigator.of(context).pushNamed("/settings");
@@ -124,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              const ArkaPlan(),
+              // ArkaPlan(),
               Positioned(
                 top: 10,
                 left: 10,
@@ -155,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           print("Merhaba");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: const Text("MERHABA")),
+            const SnackBar(content: Text("MERHABA")),
           );
         },
         child: const Text("FAB"),
@@ -268,16 +269,22 @@ class Sinif extends StatelessWidget {
             print("Tüm Öğrenciler yüklendi");
           },
         ),
-        ElevatedButton(
-          child: const Text(
-            "Yeni sayfaya git ...",
+        const SizedBox(
+          height: 20,
+        ),
+        RotatedBox(
+          quarterTurns: 1,
+          child: ElevatedButton(
+            child: const Text(
+              "Yeni sayfaya git ...",
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const AlbumPage(),
+              ));
+              // sor(context);
+            },
           ),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const AlbumPage(),
-            ));
-            // sor(context);
-          },
         ),
         ElevatedButton(
           child: const Text(
@@ -533,14 +540,14 @@ class ArkaPlan extends StatelessWidget {
         color: Colors.white,
         shadowColor: Colors.green,
         elevation: 30,
-        borderRadius: BorderRadius.all(const Radius.circular(50)),
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.green,
               width: 10,
             ),
-            borderRadius: BorderRadius.all(const Radius.circular(50)),
+            borderRadius: const BorderRadius.all(Radius.circular(50)),
           ),
           child: FractionallySizedBox(
             widthFactor: 0.75,
