@@ -1,5 +1,5 @@
 // Tasarım Örneği
-// Formlar
+// Formlar - Validation ve save özellikleri
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: Icon(Icons.settings),
             onPressed: () {
               print("Settings ...");
               Navigator.of(context).pushNamed("/settings");
@@ -155,10 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           print("Merhaba");
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("MERHABA")),
+            SnackBar(content: const Text("MERHABA")),
           );
         },
-        child: Text("FAB"),
+        child: const Text("FAB"),
       ),
     );
   }
@@ -262,7 +262,7 @@ class Sinif extends StatelessWidget {
             final ogrenciler = SinifBilgisi.of(context).ogrenciler;
             for (final ogrenci in ogrenciler) {
               print("$ogrenci yükleniyor");
-              await Future.delayed(const Duration(seconds: 1));
+              await Future.delayed(Duration(seconds: 1));
               print("$ogrenci yüklendi");
             }
             print("Tüm Öğrenciler yüklendi");
@@ -533,7 +533,7 @@ class ArkaPlan extends StatelessWidget {
         color: Colors.white,
         shadowColor: Colors.green,
         elevation: 30,
-        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        borderRadius: BorderRadius.all(const Radius.circular(50)),
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(
